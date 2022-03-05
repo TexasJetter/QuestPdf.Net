@@ -1,0 +1,13 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+
+    <a href="@Url.Page("Index", "DownloadSimplePDF")">Simple PDF</a><br />
+    <a href="@Url.Page("Index", "DownloadTablePDF")">Table PDF</a><br />
+    <a href="@Url.Page("Index", "DownloadComponentPDF")">Component PDF</a><br />
+</div>
