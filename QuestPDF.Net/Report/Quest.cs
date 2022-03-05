@@ -2,6 +2,7 @@
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using QuestPDF.Net.Models;
 using System.Net;
 
 namespace QuestPDF.Net.Report
@@ -166,9 +167,9 @@ namespace QuestPDF.Net.Report
         //---------------------------------------------------------------------
         //  Example using a custom component and image
         //---------------------------------------------------------------------
-        public static byte[] GetComponentBytes()
+        public static byte[] GetComponentBytes(List<UserInformation> users)
         {
-            var qPdf = new ComponentPdf();
+            var qPdf = new ComponentPdf(users);
             using var stream = new MemoryStream();
             qPdf.GeneratePdf(stream);
             return stream.ToArray();
@@ -176,16 +177,19 @@ namespace QuestPDF.Net.Report
 
         private class ComponentPdf : IDocument
         {
+            private readonly List<UserInformation> _users = new List<UserInformation>();
             private readonly DocumentMetadata _meta = DocumentMetadata.Default;
             public DocumentMetadata GetMetadata() => _meta;
-
+            public ComponentPdf(List<UserInformation> users)
+            {
+                _users = users;
+            }
             public void Compose(IDocumentContainer container)
             {
                 container
                 .Page(page =>
                 {
                     page.Margin(50);
-
                     page.Header().Element(ComposeHeader);
                     page.Content().Element(ComposeContent);
                     page.Footer().Element(ComposeFooter);
@@ -206,20 +210,10 @@ namespace QuestPDF.Net.Report
 
             public void ComposeContent(IContainer container)
             {
-                byte[] imageBytes;
-                using (var wc = new WebClient())
-                {
-                    imageBytes = wc.DownloadData("https://via.placeholder.com/100");
-                }
-                var users = new List<UserInformation> {
-                    new UserInformation{ Name="Jack", Image=imageBytes, Emails= new List<string>{"jack@outlook.com", "jack@gmail.com"}},
-                    new UserInformation{ Name="Ted", Image=imageBytes, Emails= new List<string>{"ted@outlook.com", "ted@gmail.com"}},
-                };
-
                 container.Column(column =>
                 {
-                    var cnt = users.Count;
-                    foreach (var user in users)
+                    var cnt = _users.Count;
+                    foreach (var user in _users)
                     {
                         column.Item().Row(row =>
                         {
@@ -283,13 +277,6 @@ namespace QuestPDF.Net.Report
                     }
                 });
             }
-        }
-
-        public class UserInformation
-        {
-            public string Name { get; set; } = string.Empty;
-            public byte[] Image { get; set; } = null;
-            public List<string> Emails { get; set; } = new List<string>();
         }
     }
 }

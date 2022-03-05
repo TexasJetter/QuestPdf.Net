@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using QuestPDF.Net.Models;
 using QuestPDF.Net.Report;
+using System.Net;
 
 namespace QuestPDF.Net.Pages
 {
@@ -27,7 +29,17 @@ namespace QuestPDF.Net.Pages
         }
         public FileResult OnGetDownloadComponentPDF()
         {
-            return File(Quest.GetComponentBytes(), "application/pdf", "Table.pdf");
+            byte[] imageBytes;
+            using (var wc = new WebClient())
+            {
+                imageBytes = wc.DownloadData("https://via.placeholder.com/100");
+            }
+            var users = new List<UserInformation> 
+            {
+                new UserInformation{ Name="Jack", Image=imageBytes, Emails= new List<string>{"jack@outlook.com", "jack@gmail.com"}},
+                new UserInformation{ Name="Ted", Image=imageBytes, Emails= new List<string>{"ted@outlook.com", "ted@gmail.com"}},
+            };
+            return File(Quest.GetComponentBytes(users), "application/pdf", "Table.pdf");
         }
     }
 }
