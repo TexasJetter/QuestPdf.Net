@@ -10,6 +10,8 @@ namespace QuestPDF.Net.Report
     public static class Quest
     {
         public static readonly string colorAccent = Colors.Indigo.Medium;
+        public static readonly string colorGrey = Colors.Grey.Medium;
+        public static readonly string colorGreyLight = Colors.Grey.Lighten1;
         public static readonly TextStyle styleTitle = TextStyle.Default.Size(14).SemiBold().Color(colorAccent);
         public static readonly TextStyle styleHeader = TextStyle.Default.Size(11).SemiBold().Color(colorAccent);
         public static readonly TextStyle styleBody = TextStyle.Default.Size(11);
@@ -38,9 +40,9 @@ namespace QuestPDF.Net.Report
                 {
                     page.Margin(50);
 
-                    page.Header().Height(100).Background(Colors.Grey.Lighten1);
-                    page.Content().Background(Colors.Grey.Lighten3);
-                    page.Footer().Height(50).Background(Colors.Grey.Lighten1);
+                    page.Header().Height(100).Background(colorGreyLight);
+                    page.Content().Background(colorGrey);
+                    page.Footer().Height(50).Background(colorGreyLight);
                 });
             }
         }
